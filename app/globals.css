@@ -414,6 +414,7 @@ html:not(.dark) .blog-search-input { background: rgba(0,0,0,0.02); }
 .blog-page::-webkit-scrollbar-track, .blog-toc-list::-webkit-scrollbar-track, .blog-sidebar::-webkit-scrollbar-track { background: transparent; }
 .blog-page::-webkit-scrollbar-thumb, .blog-toc-list::-webkit-scrollbar-thumb, .blog-sidebar::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.2); border-radius: 3px; }
 .blog-page::-webkit-scrollbar-thumb:hover, .blog-toc-list::-webkit-scrollbar-thumb:hover, .blog-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.4); }
+.blog-page, .blog-toc-list, .blog-sidebar { scrollbar-width: thin; scrollbar-color: rgba(217,119,87,0.2) transparent; }
 
 html:not(.dark) .blog-page::-webkit-scrollbar-thumb, html:not(.dark) .blog-toc-list::-webkit-scrollbar-thumb, html:not(.dark) .blog-sidebar::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.15); }
 html:not(.dark) .blog-page::-webkit-scrollbar-thumb:hover, html:not(.dark) .blog-toc-list::-webkit-scrollbar-thumb:hover, html:not(.dark) .blog-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.3); }
@@ -458,6 +459,18 @@ html { scroll-behavior: smooth; }
 .quiz-nav-scroll::-webkit-scrollbar-track { background: transparent; }
 .quiz-nav-scroll::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.2); border-radius: 3px; }
 .quiz-nav-scroll::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.4); }
+.quiz-nav-scroll { scrollbar-width: thin; scrollbar-color: rgba(217,119,87,0.2) transparent; }
+html:not(.dark) .quiz-nav-scroll::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.15); }
+html:not(.dark) .quiz-nav-scroll::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.3); }
+
+/* ── Glossary horizontal scrollbar (category tabs) ── */
+.glossary-scroll { overflow-x: auto; scrollbar-width: thin; scrollbar-color: rgba(217,119,87,0.3) transparent; }
+.glossary-scroll::-webkit-scrollbar { height: 5px; }
+.glossary-scroll::-webkit-scrollbar-track { background: transparent; }
+.glossary-scroll::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.3); border-radius: 3px; }
+.glossary-scroll::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.55); }
+html:not(.dark) .glossary-scroll::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.2); }
+html:not(.dark) .glossary-scroll::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.4); }
 
 .ripple-card {
   transition: box-shadow 0.3s;
