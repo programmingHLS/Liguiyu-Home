@@ -48,24 +48,24 @@ cd /mnt/d/Code/liguiyu-home && npm run build
 # 第一步：预演（只显示会改什么，不真的改）
 rsync -avz --dry-run --delete \
   --exclude 'node_modules' --exclude '.next' --exclude '.next-public' \
-  --exclude '.git' \
+  --exclude '.git' --exclude '.reasonix' --exclude '.remember' \
   --exclude '.env.local' --exclude '.env.production' \
-  --exclude 'data/*.db' --exclude 'data/*.db-*' \
+  --exclude 'data' --exclude 'data/*.db' --exclude 'data/*.db-*' \
   --exclude 'data/posts' --exclude 'data/pdfs' \
-  --exclude 'data/league-materials' \
-  --exclude 'app/fonts' \
+  --exclude 'data/league-materials' --exclude 'data/batch-import-aviation.txt' \
+  --exclude 'app/fonts' --exclude 'public/fonts' \
   /mnt/d/Code/liguiyu-home/ \
   Server:/vol1/1000/Docker/liguiyu-home/
 
 # 确认预演输出里没有 deleting data/ 之类的东西后，再跑正式的：
 rsync -avz --delete \
   --exclude 'node_modules' --exclude '.next' --exclude '.next-public' \
-  --exclude '.git' \
+  --exclude '.git' --exclude '.reasonix' --exclude '.remember' \
   --exclude '.env.local' --exclude '.env.production' \
-  --exclude 'data/*.db' --exclude 'data/*.db-*' \
+  --exclude 'data' --exclude 'data/*.db' --exclude 'data/*.db-*' \
   --exclude 'data/posts' --exclude 'data/pdfs' \
-  --exclude 'data/league-materials' \
-  --exclude 'app/fonts' \
+  --exclude 'data/league-materials' --exclude 'data/batch-import-aviation.txt' \
+  --exclude 'app/fonts' --exclude 'public/fonts' \
   /mnt/d/Code/liguiyu-home/ \
   Server:/vol1/1000/Docker/liguiyu-home/
 ```
@@ -73,12 +73,15 @@ rsync -avz --delete \
 **排除说明**（缺一个都会丢生产数据）：
 | 排除项 | 后果 |
 |--------|------|
-| `data/*.db` | 删掉所有用户、评论、团支书名单 |
+| `data`（整体） | 兜底：覆盖下面所有 data/ 子项 |
+| `data/*.db`、`data/*.db-*` | 删掉所有用户、评论、团支书名单（含 SQLite WAL/SHM） |
 | `data/posts/` | 删掉所有博客文章 |
 | `data/pdfs/` | 删掉所有题库 PDF |
 | `data/league-materials/` | 删掉所有团日上传资料 |
+| `data/batch-import-aviation.txt` | 删掉导入源数据 |
 | `.env*` | 泄露密钥 |
-| `app/fonts/` | 每次重传 20MB+ 字体文件（不会丢数据，但浪费时间和带宽） |
+| `app/fonts/`、`public/fonts/` | 重传字体文件（当前两端均为空目录） |
+| `.next-public/`、`.reasonix/`、`.remember/` | 构建产物 / 工具目录，不应上 NAS |
 
 ### Step 4: 通知桂鱼重建
 

@@ -4,7 +4,7 @@ import { useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, Quote, Sparkles, Lightbulb, MessageCircle, CheckCircle2, XCircle, BookOpen } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, Quote, Sparkles, Lightbulb, CheckCircle2, XCircle, BookOpen } from "lucide-react";
 import { useTheme } from "../../components/ThemeProvider";
 import Navbar from "../../components/Navbar";
 import PageGlow from "../../components/PageGlow";
@@ -25,6 +25,9 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
+      // 输入框/文本域/富文本内不劫持按键
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable)) return;
       if (e.key === "Escape") router.push("/glossary");
       if (e.key === "ArrowLeft" && prev) router.push(`/glossary/${prev.id}`);
       if (e.key === "ArrowRight" && next) router.push(`/glossary/${next.id}`);

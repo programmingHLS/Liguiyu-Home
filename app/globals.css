@@ -472,6 +472,15 @@ html:not(.dark) .quiz-nav-scroll::-webkit-scrollbar-thumb:hover { background: rg
 html:not(.dark) .glossary-scroll::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.2); }
 html:not(.dark) .glossary-scroll::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.4); }
 
+/* ── Glossary vertical scrollbar (side category list) ── */
+.glossary-scroll-y { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(217,119,87,0.3) transparent; }
+.glossary-scroll-y::-webkit-scrollbar { width: 5px; }
+.glossary-scroll-y::-webkit-scrollbar-track { background: transparent; }
+.glossary-scroll-y::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.3); border-radius: 3px; }
+.glossary-scroll-y::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.55); }
+html:not(.dark) .glossary-scroll-y::-webkit-scrollbar-thumb { background: rgba(217,119,87,0.2); }
+html:not(.dark) .glossary-scroll-y::-webkit-scrollbar-thumb:hover { background: rgba(217,119,87,0.4); }
+
 .ripple-card {
   transition: box-shadow 0.3s;
 }

@@ -3,6 +3,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../components/ThemeProvider";
+import { frontendDemos } from "./demos-frontend2";
+import { backendDemos } from "./demos-backend";
+import { designDemos } from "./demos-design";
+import { aiDemos } from "./demos-ai";
+import { vibeGitDemos } from "./demos-vibegit";
+import { devopsDemos } from "./demos-devops";
 
 /* 主题感知 hook：返回当前主题下的常用色值 */
 function usePalette() {
@@ -1690,4 +1696,10 @@ export const demoComponents: Record<string, React.ComponentType> = {
   "sticky-demo": StickyDemo,
   "state-demo": StateDemo,
   "viewport-demo": ViewportDemo,
+  ...frontendDemos,
+  ...backendDemos,
+  ...designDemos,
+  ...aiDemos,
+  ...vibeGitDemos,
+  ...devopsDemos,
 };

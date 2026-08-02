@@ -118,11 +118,11 @@ Articles are read at request time via `getPostBySlug()` in `app/lib/posts.ts`. H
 
 ## Deploy workflow (龙虾协作流)
 
-Code lives at `D:\Code\liguiyu-home` (Windows) and is synced to NAS at `Server:/vol1/1000/Docker/liguiyu-home/`:
+Code lives at `D:\Code\liguiyu-home` (Windows) and is synced to NAS at `Server:/vol1/1000/Docker/liguiyu-home/`. rsync runs **inside WSL** (no native Windows rsync; WSL `~/.ssh/config` already has the `Server` alias): `wsl -e bash -lc "rsync ..."` with source `/mnt/d/Code/liguiyu-home/`.
 
 1. Write code, then `npm run build` locally — must pass before syncing
 2. `rsync -avz --dry-run --delete ...` — preview what will change (CRITICAL: check no `data/` deletions)
-3. `rsync -avz --delete ...` — sync source to NAS (exclude: `node_modules`, `.next`, `.git`, `data/*.db`, `data/posts`, `data/pdfs`, `data/league-materials`, `.env*`, `app/fonts`)
+3. `rsync -avz --delete ...` — sync source to NAS (exclude, must cover **every** data file: `node_modules`, `.next`, `.next-public`, `.git`, `.reasonix`, `.remember`, `data/`, `data/*.db`, `data/*.db-shm`, `data/*.db-wal`, `data/posts`, `data/pdfs`, `data/league-materials`, `data/batch-import-aviation.txt`, `.env*`, `app/fonts`, `public/fonts`)
 4. Notify user to rebuild Docker: `ssh Server && cd /vol1/1000/Docker/liguiyu-home && sudo docker compose up -d --build`
 
 **NAS details**: SSH alias `Server`, project at `/vol1/1000/Docker/liguiyu-home/`, Docker commands need `sudo`.

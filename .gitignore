@@ -42,3 +42,5 @@ next-env.d.ts
 
 # Reasonix session metadata
 .reasonix/
+.remember/
+.next-public/
