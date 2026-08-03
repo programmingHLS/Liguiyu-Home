@@ -135,7 +135,7 @@ export default function InteractiveSection({
         )}
       </motion.div>
 
-      <div className="relative z-10 mx-auto max-w-[1200px]">{children}</div>
+      <div className="relative z-10 mx-auto max-w-[1200px] min-w-0 w-full">{children}</div>
     </section>
   );
 }

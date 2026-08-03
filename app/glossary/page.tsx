@@ -64,7 +64,7 @@ export default function GlossaryPage() {
         <Navbar />
 
         <InteractiveSection id="glossary-list" theme="lab" className="!min-h-0 !py-8 !overflow-visible">
-          <div className="max-w-[1100px] mx-auto px-4 sm:px-6">
+          <div className="max-w-[1100px] mx-auto px-4 sm:px-6 min-w-0">
         {/* Hero */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <h1 className="text-[28px] sm:text-[36px] font-bold tracking-[-0.03em] leading-[1.1] mb-3" style={{ color: colors.text, fontFamily: "var(--font-display)" }}>
@@ -140,6 +140,7 @@ export default function GlossaryPage() {
                 >
                   <Link
                     href={`/glossary/${term.id}`}
+                    transitionTypes={["nav-forward"]}
                     className="block no-underline rounded-[14px] border p-5 transition-all duration-200 hover:-translate-y-0.5 group"
                     style={{
                       backgroundColor: colors.surface,

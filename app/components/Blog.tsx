@@ -35,6 +35,7 @@ export default function Blog({ posts }: { posts: PostMeta[] }) {
             >
               <Link
                 href={`/blog/${post.slug}`}
+                transitionTypes={["nav-forward"]}
                 className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 px-6 py-5 no-underline"
               >
                 <span className="text-muted text-[13px] font-[500] shrink-0 w-24" style={{ fontFamily: "var(--font-mono)" }}>{post.date}</span>
@@ -56,6 +57,7 @@ export default function Blog({ posts }: { posts: PostMeta[] }) {
           >
             <Link
               href="/blog"
+              transitionTypes={["nav-forward"]}
               className="inline-flex items-center gap-2.5 px-6 py-3 rounded-[12px] text-[15px] font-[500] no-underline transition-all"
               style={{
                 fontFamily: "var(--font-body)",

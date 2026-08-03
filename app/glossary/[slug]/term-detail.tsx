@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, Quote, Sparkles, Lightbulb, CheckCircle2, XCircle, BookOpen } from "lucide-react";
 import { useTheme } from "../../components/ThemeProvider";
 import Navbar from "../../components/Navbar";
@@ -12,7 +12,7 @@ import ClickRipple from "../../components/ClickRipple";
 import InteractiveSection from "../../components/InteractiveSection";
 import { demoComponents } from "../demos";
 import type { GlossaryTerm, GlossaryCategory } from "../data";
-import { getAdjacentTerms } from "../data";
+import { getAdjacentTerms, glossaryData } from "../data";
 
 export default function TermDetail({ term, category }: { term: GlossaryTerm; category: GlossaryCategory }) {
   const { resolved } = useTheme();
@@ -22,15 +22,38 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
   const { prev, next } = getAdjacentTerms(term.id);
   const DemoComponent = term.demo ? demoComponents[term.demo] : null;
 
+  // ── 侧边栏折叠 ──
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // ── 悬停指示条（与博客文章目录同款弹簧动画）──
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0 });
+  const termListRef = useRef<HTMLDivElement>(null);
+
+  const handleHover = useCallback(
+    (index: number | null, e?: React.MouseEvent<HTMLAnchorElement>) => {
+      setHoveredIndex(index);
+      if (index !== null && e && termListRef.current) {
+        const listRect = termListRef.current.getBoundingClientRect();
+        const targetRect = e.currentTarget.getBoundingClientRect();
+        setIndicatorStyle({
+          top: targetRect.top - listRect.top,
+          height: targetRect.height,
+        });
+      }
+    },
+    []
+  );
+
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       // 输入框/文本域/富文本内不劫持按键
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable)) return;
-      if (e.key === "Escape") router.push("/glossary");
-      if (e.key === "ArrowLeft" && prev) router.push(`/glossary/${prev.id}`);
-      if (e.key === "ArrowRight" && next) router.push(`/glossary/${next.id}`);
+      if (e.key === "Escape") router.push("/glossary", { transitionTypes: ["nav-back"] });
+      if (e.key === "ArrowLeft" && prev) router.push(`/glossary/${prev.id}`, { transitionTypes: ["nav-back"] });
+      if (e.key === "ArrowRight" && next) router.push(`/glossary/${next.id}`, { transitionTypes: ["nav-forward"] });
     },
     [prev, next, router]
   );
@@ -68,10 +91,120 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
       <div className="min-h-screen pt-[60px]" style={{ backgroundColor: colors.bg, fontFamily: "var(--font-body)" }}>
         <Navbar />
         <InteractiveSection id="glossary-detail" theme="lab" className="!min-h-0 !py-8">
-          <div className="max-w-[780px] mx-auto px-4 sm:px-6 pb-24">
+          <div className="max-w-[1100px] mx-auto px-4 sm:px-6 pb-24 min-w-0">
+            <div className={`flex items-start ${sidebarOpen ? "gap-8" : "gap-0"}`}>
+              {/* Left sidebar: categories + current category terms（可折叠，同博客目录交互） */}
+              <AnimatePresence initial={false}>
+                {sidebarOpen && (
+                  <motion.aside
+                    initial={{ width: 0, opacity: 0, marginRight: 0 }}
+                    animate={{ width: 200, opacity: 1, marginRight: 32 }}
+                    exit={{ width: 0, opacity: 0, marginRight: 0 }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    className="hidden lg:block shrink-0 sticky top-[80px] self-start overflow-hidden"
+                  >
+                    <div className="w-[200px]">
+                      <div className="glossary-scroll-y max-h-[calc(100vh-150px)] flex flex-col gap-1 pr-1.5">
+                        {/* Collapse button */}
+                        <button
+                          onClick={() => setSidebarOpen(false)}
+                          className="shrink-0 self-end w-6 h-6 mb-1 rounded-[6px] border flex items-center justify-center cursor-pointer transition-all hover:opacity-75"
+                          style={{ borderColor: colors.border, color: colors.textFaint }}
+                          aria-label="收起目录"
+                        >
+                          <ChevronLeft size={13} />
+                        </button>
+                        <Link href="/glossary" transitionTypes={["nav-back"]} className="shrink-0 w-full px-3 py-2 rounded-[9px] text-[12px] font-medium border transition-colors hover:opacity-75 no-underline flex items-center gap-2" style={{ borderColor: colors.border, color: colors.textMuted }}>
+                          <span className="text-[13px] leading-none shrink-0">📚</span>
+                          <span className="flex-1 truncate text-left">全部术语</span>
+                          <span className="text-[10px] opacity-60 shrink-0">{glossaryData.reduce((n, c) => n + c.terms.length, 0)}</span>
+                        </Link>
+                        {glossaryData.map((cat) => {
+                          const isCurrent = cat.id === category.id;
+                          return (
+                            <div key={cat.id} className="shrink-0">
+                              <Link
+                                href="/glossary"
+                                transitionTypes={["nav-back"]}
+                                className="w-full px-3 py-1.5 rounded-[9px] text-[12px] font-medium border transition-all no-underline flex items-center gap-2"
+                                style={{
+                                  backgroundColor: isCurrent ? accent : "transparent",
+                                  color: isCurrent ? "#fff" : colors.textMuted,
+                                  borderColor: isCurrent ? accent : colors.border,
+                                }}
+                              >
+                                <span className="text-[13px] leading-none shrink-0">{cat.icon}</span>
+                                <span className="flex-1 truncate text-left">{cat.name}</span>
+                                <span className="text-[10px] opacity-60 shrink-0">{cat.terms.length}</span>
+                              </Link>
+                              {isCurrent && (
+                                <div
+                                  ref={termListRef}
+                                  onMouseLeave={() => handleHover(null)}
+                                  className="ml-2.5 mt-1 mb-1.5 pl-2.5 border-l relative flex flex-col gap-0.5"
+                                  style={{ borderColor: colors.border }}
+                                >
+                                  {/* Floating hover indicator — 与博客文章目录同款弹簧动画 */}
+                                  <motion.div
+                                    className="absolute left-0 right-0 rounded-[7px] pointer-events-none z-0"
+                                    animate={
+                                      hoveredIndex !== null
+                                        ? { y: indicatorStyle.top, height: indicatorStyle.height, opacity: 1 }
+                                        : { opacity: 0 }
+                                    }
+                                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                    style={{ backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.045)" }}
+                                  />
+                                  {cat.terms.map((t, i) => {
+                                    const isActive = t.id === term.id;
+                                    return (
+                                      <Link
+                                        key={t.id}
+                                        href={`/glossary/${t.id}`}
+                                        transitionTypes={["nav-forward"]}
+                                        onMouseEnter={(e) => handleHover(i, e)}
+                                        className="no-underline px-2.5 py-1.5 rounded-[7px] text-[12px] transition-colors whitespace-nowrap overflow-hidden text-ellipsis relative z-10"
+                                        style={{
+                                          color: isActive ? accent : colors.textMuted,
+                                          backgroundColor: isActive ? colors.accentBg : "transparent",
+                                          fontWeight: isActive ? 600 : 400,
+                                        }}
+                                      >
+                                        {t.name}
+                                      </Link>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </motion.aside>
+                )}
+              </AnimatePresence>
+              {/* Expand button（目录收起时显示） */}
+              <AnimatePresence>
+                {!sidebarOpen && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={() => setSidebarOpen(true)}
+                    className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-40 w-9 h-9 rounded-full border items-center justify-center cursor-pointer no-underline"
+                    style={{ borderColor: colors.border, backgroundColor: colors.surface }}
+                    aria-label="展开目录"
+                  >
+                    <ChevronRight size={16} style={{ color: colors.textMuted }} />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+              <div className="flex-1 min-w-0">
+                <div className="max-w-[780px] mx-auto">
         {/* Breadcrumb */}
         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center gap-2 text-[12px] mb-2">
-          <Link href="/glossary" className="no-underline transition-colors hover:opacity-70" style={{ color: colors.textMuted }}>
+          <Link href="/glossary" transitionTypes={["nav-back"]} className="no-underline transition-colors hover:opacity-70" style={{ color: colors.textMuted }}>
             <span className="flex items-center gap-1"><ArrowLeft size={12} /> 术语图鉴</span>
           </Link>
           <span style={{ color: colors.textFaint }}>/</span>
@@ -326,7 +459,7 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
         {/* Navigation footer */}
         <div className="flex items-center justify-between pt-8 border-t" style={{ borderColor: colors.border }}>
           {prev ? (
-            <Link href={`/glossary/${prev.id}`} className="flex items-center gap-2 no-underline group transition-opacity hover:opacity-70">
+            <Link href={`/glossary/${prev.id}`} transitionTypes={["nav-back"]} className="flex items-center gap-2 no-underline group transition-opacity hover:opacity-70">
               <ChevronLeft size={16} style={{ color: accent }} />
               <div>
                 <p className="text-[10px]" style={{ color: colors.textFaint }}>上一个</p>
@@ -335,7 +468,7 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
             </Link>
           ) : <div />}
           {next ? (
-            <Link href={`/glossary/${next.id}`} className="flex items-center gap-2 no-underline group transition-opacity hover:opacity-70 text-right">
+            <Link href={`/glossary/${next.id}`} transitionTypes={["nav-forward"]} className="flex items-center gap-2 no-underline group transition-opacity hover:opacity-70 text-right">
               <div>
                 <p className="text-[10px]" style={{ color: colors.textFaint }}>下一个</p>
                 <p className="text-[13px] font-medium" style={{ color: colors.text }}>{next.name}</p>
@@ -344,23 +477,36 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
             </Link>
           ) : <div />}
         </div>
-      </div>
+          </div>
+              </div>
+            </div>
+          </div>
 
       {/* Side navigation arrows (desktop) */}
-      <div className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-30">
+      <motion.div
+        animate={{ opacity: sidebarOpen ? 1 : 0 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="hidden lg:flex fixed left-4 top-1/2 -translate-y-1/2 z-30"
+        style={{ pointerEvents: sidebarOpen ? "auto" : "none" }}
+      >
         {prev && (
-          <Link href={`/glossary/${prev.id}`} className="w-10 h-10 rounded-full border flex items-center justify-center no-underline transition-all hover:scale-110" style={{ borderColor: colors.border, backgroundColor: colors.surface }}>
+          <Link href={`/glossary/${prev.id}`} transitionTypes={["nav-back"]} className="w-10 h-10 rounded-full border flex items-center justify-center no-underline transition-all hover:scale-110" style={{ borderColor: colors.border, backgroundColor: colors.surface }}>
             <ChevronLeft size={18} style={{ color: colors.textMuted }} />
           </Link>
         )}
-      </div>
-      <div className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 z-30">
+      </motion.div>
+      <motion.div
+        animate={{ opacity: sidebarOpen ? 1 : 0 }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="hidden lg:flex fixed right-4 top-1/2 -translate-y-1/2 z-30"
+        style={{ pointerEvents: sidebarOpen ? "auto" : "none" }}
+      >
         {next && (
-          <Link href={`/glossary/${next.id}`} className="w-10 h-10 rounded-full border flex items-center justify-center no-underline transition-all hover:scale-110" style={{ borderColor: colors.border, backgroundColor: colors.surface }}>
+          <Link href={`/glossary/${next.id}`} transitionTypes={["nav-forward"]} className="w-10 h-10 rounded-full border flex items-center justify-center no-underline transition-all hover:scale-110" style={{ borderColor: colors.border, backgroundColor: colors.surface }}>
             <ChevronRight size={18} style={{ color: colors.textMuted }} />
           </Link>
         )}
-          </div>
+      </motion.div>
         </InteractiveSection>
       </div>
     </>
@@ -370,7 +516,6 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
 /* ═══════════════════════════════════════════
    Quiz Block
    ═══════════════════════════════════════════ */
-import { useState } from "react";
 
 function QuizBlock({ quiz, colors }: { quiz: NonNullable<GlossaryTerm["quiz"]>; colors: Record<string, string> }) {
   const [selected, setSelected] = useState<string | null>(null);

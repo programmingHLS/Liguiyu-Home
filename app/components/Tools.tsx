@@ -2,6 +2,9 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import Link from "next/link";
+
+const MotionLink = motion.create(Link);
 import { Library, BookOpen, ExternalLink, Monitor, Upload, SpellCheck } from "lucide-react";
 import InteractiveSection from "./InteractiveSection";
 
@@ -28,9 +31,10 @@ export default function Tools() {
 
         <motion.div variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } }} initial="hidden" animate={inView ? "visible" : "hidden"} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {tools.map((tool) => (
-            <motion.a
+            <MotionLink
               key={tool.title}
               href={tool.href}
+              transitionTypes={tool.href.startsWith("http") ? undefined : ["nav-forward"]}
               target={tool.href.startsWith("http") ? "_blank" : undefined}
               rel={tool.href.startsWith("http") ? "noopener noreferrer" : undefined}
               variants={{ hidden: { opacity: 0, y: 50, scale: 0.92, filter: "blur(4px)" }, visible: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } } }}
@@ -65,7 +69,7 @@ export default function Tools() {
                 <span className="text-[14px] font-[500] group-hover:translate-x-0.5 transition-transform duration-300" style={{ fontFamily: "var(--font-body)", color: tool.accent }}>{tool.label}</span>
                 <motion.span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ color: tool.accent }}><ExternalLink size={13} /></motion.span>
               </div>
-            </motion.a>
+            </MotionLink>
           ))}
         </motion.div>
       </div>

@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
+
+const MotionLink = motion.create(Link);
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "./ThemeProvider";
 import { useSession, signOut } from "next-auth/react";
@@ -60,6 +63,7 @@ export default function Navbar() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
         style={{
+          viewTransitionName: "site-header",
           backgroundColor: showNavBg
             ? isDarkBg
               ? "rgba(24,22,19,0.94)"
@@ -81,8 +85,9 @@ export default function Navbar() {
       >
         <div className="mx-auto flex items-center justify-center px-6 py-4 relative w-full">
           {/* Logo */}
-          <motion.a
+          <MotionLink
             href="/#hero"
+            transitionTypes={["nav-forward"]}
             className="absolute left-6 font-[family-name:var(--font-playfair-display)] text-[18px] font-medium tracking-[-0.01em] no-underline z-10"
             style={{
               color: useLightText ? "#c2c1b6" : "#4a4840",
@@ -92,7 +97,7 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
           >
             桂鱼
-          </motion.a>
+          </MotionLink>
 
           {/* Desktop Nav with floating indicator (Centered) */}
           <div ref={navRef} className="hidden md:flex items-center gap-1 relative z-10">
@@ -118,9 +123,10 @@ export default function Navbar() {
 
             {navLinks.map((link, i) => {
               return (
-                <motion.a
+                <MotionLink
                   key={link.href}
                   href={link.href}
+                  transitionTypes={["nav-forward"]}
                   className="relative z-10 px-4 py-[6px] rounded-[8px] text-[15px] font-[500] no-underline transition-colors"
                   style={{
                     color: useLightText ? "#d6d5cd" : "#7d7b72",
@@ -130,7 +136,7 @@ export default function Navbar() {
                   whileHover={{ color: useLightText ? "#c2c1b6" : "#4a4840" }}
                 >
                   {link.label}
-                </motion.a>
+                </MotionLink>
               );
             })}
           </div>
@@ -170,9 +176,10 @@ export default function Navbar() {
             }}
           >
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
+                transitionTypes={["nav-forward"]}
                 onClick={() => setMobileOpen(false)}
                 className="block px-3 py-2.5 text-[15px] no-underline rounded-[8px]"
                 style={{
@@ -180,7 +187,7 @@ export default function Navbar() {
                 }}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <a
               href="https://github.com/programmingWTF"
