@@ -13,6 +13,7 @@ import { LogIn, User as UserIcon } from "lucide-react";
 
 const navLinks = [
   { href: "/#hero", label: "首页" },
+  { href: "/#skills", label: "技术栈" },
   { href: "/#blog", label: "更新" },
   { href: "/#tools", label: "工具箱" },
   { href: "/#about", label: "关于" },

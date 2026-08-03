@@ -2,6 +2,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Tools from "./components/Tools";
 import About from "./components/About";
+import Skills from "./components/Skills";
 import Blog from "./components/Blog";
 import Footer from "./components/Footer";
 import GlobalGrid from "./components/GlobalGrid";
@@ -21,6 +22,7 @@ export default function Home() {
       <ClickRipple />
       <Navbar />
       <Hero />
+      <Skills />
       <Blog posts={posts} />
       <Tools />
       <About />

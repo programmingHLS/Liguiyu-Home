@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Users, Zap } from "lucide-react";
+import { CalendarDays, Heart, Users, Zap } from "lucide-react";
 import InteractiveSection from "./InteractiveSection";
 import TiltCard from "./TiltCard";
 
@@ -15,10 +15,10 @@ function GithubIcon({ size = 22, color, className }: { size?: number; color?: st
 }
 
 const stats = [
-  { icon: Users, value: "NUAA", label: "为校友服务" },
-  { icon: Zap, value: "100%", label: "宿舍自建" },
-  { icon: GithubIcon, value: "开源", label: "代码公开" },
-  { icon: Heart, value: "热爱", label: "纯粹热爱" },
+  { icon: Users, value: "AI 专业", label: "南航在读" },
+  { icon: Zap, value: "全栈", label: "Web + AI" },
+  { icon: GithubIcon, value: "开源", label: "GitHub 全公开" },
+  { icon: CalendarDays, value: "02 年", label: "持续更新中" },
 ];
 
 const archLayers = [
@@ -34,22 +34,33 @@ export default function About() {
         {/* Left: Text */}
         <div className="flex-1">
           <h2 className="text-heading text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-6" style={{ fontFamily: "var(--font-display)" }}>
-            关于这个网站
+            关于我
           </h2>
           <p className="text-body text-[18px] leading-[1.45] tracking-[-0.18px] font-[400] mb-5" style={{ fontFamily: "var(--font-body)" }}>
-            我是桂鱼，NUAA 的一名普通学生。这些工具都跑在我宿舍的一台服务器上——没有云计算厂商的昂贵账单，没有第三方的数据收集，所有代码开源在 GitHub。
+            我是李桂聿（Guiyu Li），南京航空航天大学人工智能专业学生。白天上课，晚上写代码——从 Web 全栈到 AI，喜欢把想法做成真实可用的东西。
+          </p>
+          <p className="text-body text-[18px] leading-[1.45] tracking-[-0.18px] font-[400] mb-5" style={{ fontFamily: "var(--font-body)" }}>
+            我在宿舍搭了一台服务器，跑着自己的网站、工具和 AI 服务。没有云厂商账单，没有第三方数据收集，所有代码开源在 GitHub。
           </p>
           <p className="text-body text-[18px] leading-[1.45] tracking-[-0.18px] font-[400] mb-8" style={{ fontFamily: "var(--font-body)" }}>
-            我希望能用自己学到的技术，给身边的同学带来一点便利。如果你有用得上的功能，或者想一起维护这些工具，欢迎来找我。
+            做过的项目：实时手势识别系统（天目启航 · 校级优秀）、交互式点云框架，还有这个工具箱里的所有工具。
           </p>
-          <a href="https://github.com/programmingWTF" target="_blank" rel="noopener noreferrer" className="text-accent inline-flex items-center gap-2 text-[16px] font-[500] no-underline transition-colors hover:text-[#e8957a]" style={{ fontFamily: "var(--font-body)" }}>
-            GitHub → 查看全部项目
-          </a>
+          <div className="flex flex-col gap-2.5">
+            <a href="https://github.com/programmingWTF" target="_blank" rel="noopener noreferrer" className="text-accent inline-flex items-center gap-2 text-[16px] font-[500] no-underline transition-colors hover:text-[#e8957a] w-fit" style={{ fontFamily: "var(--font-body)" }}>
+              GitHub → programmingWTF
+            </a>
+            <a href="https://github.com/LiGuiyu-AI" target="_blank" rel="noopener noreferrer" className="text-accent inline-flex items-center gap-2 text-[16px] font-[500] no-underline transition-colors hover:text-[#e8957a] w-fit" style={{ fontFamily: "var(--font-body)" }}>
+              🦞 认识我的 AI 助手龙虾 →
+            </a>
+          </div>
         </div>
 
         {/* Right: Architecture */}
         <div className="flex-1 w-full">
           <div className="arch-diagram relative rounded-[24px] overflow-hidden p-8">
+            <div className="text-center text-[13px] font-[500] tracking-[0.2em] uppercase mb-6" style={{ fontFamily: "var(--font-body)", color: "rgba(217,119,87,0.6)" }}>
+              本站架构
+            </div>
             <div className="flex flex-col items-center gap-2">
               <div className="w-full max-w-[360px] flex flex-col gap-2 items-center">
                 {archLayers.map((item, i) => (

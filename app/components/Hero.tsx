@@ -7,9 +7,26 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import StarfieldBackground from "./StarfieldBackground";
+
+const letterVariants = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+    filter: "blur(12px)",
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: {
+      duration: 1.2,
+      ease: easeOutExpo,
+    },
+  },
+};
 
 export default function Hero() {
   const { resolved: theme } = useTheme();
@@ -23,7 +40,8 @@ export default function Hero() {
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
-  const titleWords = ["探索", "未知，", "从这里", "开始"];
+  const cnName = ["李", "桂", "聿"];
+  const enName = ["（", "G", "u", "i", "y", "u", " ", "L", "i", "）"];
 
   return (
     <section
@@ -59,8 +77,9 @@ export default function Hero() {
           <motion.span
             animate={{ rotate: [0, 15, -15, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="text-[16px] leading-none"
           >
-            <Sparkles size={16} color="#d97757" />
+            👋
           </motion.span>
           <span
             className="text-[14px] font-[500] tracking-wide"
@@ -69,119 +88,158 @@ export default function Hero() {
               color: isDark ? "#d6d5cd" : "#4a4840",
             }}
           >
-            南航工具箱
+            Hi，我是李桂聿
           </span>
         </motion.div>
 
-        {/* Title — 更克制、更大气的排版 */}
+        {/* Title — 中文名大字 + 英文名小字 */}
         <motion.h1
-          initial="hidden"
-          animate="visible"
-          className="text-[48px] sm:text-[72px] leading-[1.1] tracking-[-0.02em] font-[400] mb-8 select-none whitespace-nowrap"
-          style={{ 
-            fontFamily: "var(--font-display)", 
-            color: isDark ? "#c2c1b6" : "#4a4840" 
-          }}
+          className="flex items-baseline justify-center gap-3 sm:gap-5 text-[48px] sm:text-[72px] leading-[1.1] tracking-[-0.02em] font-[400] mb-8 select-none"
+          style={{ fontFamily: "var(--font-display)" }}
         >
-          {titleWords.map((word, i) => (
-            <motion.span
-              key={word}
-              className="inline"
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: 40,
-                  filter: "blur(12px)",
-                },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  filter: "blur(0px)",
-                  transition: {
-                    duration: 1.2,
-                    delay: 0.3 + i * 0.1,
-                    ease: easeOutExpo,
-                  },
-                },
-              }}
-            >
-              {word}
-            </motion.span>
-          ))}
+          <motion.span
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
+            className="whitespace-nowrap"
+            style={{ color: isDark ? "#c2c1b6" : "#4a4840" }}
+          >
+            {cnName.map((ch, i) => (
+              <motion.span key={i} variants={letterVariants} className="inline-block">
+                {ch}
+              </motion.span>
+            ))}
+          </motion.span>
+          <motion.span
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05, delayChildren: 0.9 } } }}
+            className="text-[20px] sm:text-[32px] whitespace-nowrap"
+            style={{ color: "#d97757" }}
+          >
+            {enName.map((ch, i) => (
+              <motion.span key={i} variants={letterVariants} className="inline-block">
+                {ch === " " ? "\u00A0" : ch}
+              </motion.span>
+            ))}
+          </motion.span>
         </motion.h1>
 
-        {/* Subtitle — 更现代的对比度 */}
+        {/* Signature — 橙色小字 */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.6, ease: "easeOut" }}
+          className="text-[14px] font-[400] tracking-[0.18em] uppercase mb-8 select-none"
+          style={{
+            fontFamily: "var(--font-body)",
+            color: isDark ? "rgba(217,119,87,0.7)" : "rgba(217,119,87,0.85)",
+          }}
+        >
+          Artificial Intelligence @ NUAA
+        </motion.p>
+
+        {/* Subtitle — 能力介绍 + 邀约 */}
         <motion.p
           initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1, delay: 0.8, ease: easeOutExpo }}
+          transition={{ duration: 1, delay: 1.8, ease: easeOutExpo }}
           className="text-[18px] sm:text-[22px] leading-[1.6] tracking-[-0.01em] font-[400] max-w-[600px] mb-14 select-none"
           style={{
             fontFamily: "var(--font-body)",
             color: isDark ? "#d6d5cd" : "#7d7b72",
           }}
         >
-          从云端开发到自动化部署，整合全栈工具链。<br/>
-          将代码与创意在这里转化为现实。
+          全栈开发 · AI · 把想法做成真实可用的工具<br/>
+          如果有比赛或项目想邀请参加，欢迎随时联系我
         </motion.p>
 
-        {/* CTA buttons — 高级玻璃拟物风 */}
+        {/* CTA — 主按钮 + 次级锚点导航 */}
         <motion.div
           initial="hidden"
           animate="visible"
           variants={{
             hidden: {},
-            visible: { transition: { staggerChildren: 0.1, delayChildren: 1.1 } },
+            visible: { transition: { staggerChildren: 0.08, delayChildren: 2.0 } },
           }}
-          className="flex flex-col sm:flex-row items-center gap-5"
+          className="flex flex-col items-center gap-7"
         >
-          {[
-            {
-              href: "#tools",
-              label: "探索基础设施",
-              primary: true,
-            },
-            {
-              href: "https://github.com/programmingWTF",
-              label: "GitHub",
-              primary: false,
-            },
-          ].map((btn) => (
-            <motion.a
-              key={btn.label}
-              href={btn.href}
-              target={btn.primary ? undefined : "_blank"}
-              rel={btn.primary ? undefined : "noopener noreferrer"}
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.8, ease: easeOutExpo },
-                },
-              }}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              className={`inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-[16px] font-[500] no-underline transition-all duration-300 select-none backdrop-blur-md`}
-              style={
-                btn.primary
-                  ? {
-                      backgroundColor: isDark ? "rgba(255,255,255,0.9)" : "#0f172a",
-                      color: isDark ? "#4a4840" : "#c2c1b6",
-                      boxShadow: isDark 
-                        ? "0 10px 30px -10px rgba(255,255,255,0.3)" 
-                        : "0 10px 30px -10px rgba(15,23,42,0.4)",
-                    }
-                  : {
-                      backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
-                      color: isDark ? "#c2c1b6" : "#4a4840",
-                      border: isDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)",
-                    }
-              }
-            >
-              {btn.label}
-            </motion.a>
-          ))}
+          {/* 主 CTA 行 */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easeOutExpo } },
+            }}
+            className="flex flex-col sm:flex-row items-center gap-5"
+          >
+            {[
+              {
+                href: "#tools",
+                label: "探索我的项目",
+                primary: true,
+              },
+              {
+                href: "https://github.com/programmingWTF",
+                label: "GitHub →",
+                primary: false,
+              },
+            ].map((btn) => (
+              <motion.a
+                key={btn.label}
+                href={btn.href}
+                target={btn.primary ? undefined : "_blank"}
+                rel={btn.primary ? undefined : "noopener noreferrer"}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className={`inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-[16px] font-[500] no-underline transition-all duration-300 select-none backdrop-blur-md`}
+                style={
+                  btn.primary
+                    ? {
+                        backgroundColor: isDark ? "rgba(255,255,255,0.9)" : "#0f172a",
+                        color: isDark ? "#4a4840" : "#c2c1b6",
+                        boxShadow: isDark 
+                          ? "0 10px 30px -10px rgba(255,255,255,0.3)" 
+                          : "0 10px 30px -10px rgba(15,23,42,0.4)",
+                      }
+                    : {
+                        backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
+                        color: isDark ? "#c2c1b6" : "#4a4840",
+                        border: isDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)",
+                      }
+                }
+              >
+                {btn.label}
+              </motion.a>
+            ))}
+          </motion.div>
+
+          {/* 次级锚点导航 — 轻量小字 */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 14 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: easeOutExpo } },
+            }}
+            className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+          >
+            {[
+              { href: "#skills", label: "技术栈" },
+              { href: "#blog", label: "博客" },
+              { href: "#tools", label: "工具箱" },
+              { href: "#about", label: "关于我" },
+            ].map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-[14px] font-[500] no-underline transition-all duration-300 hover:text-[#e8957a] hover:-translate-y-0.5"
+                style={{
+                  fontFamily: "var(--font-body)",
+                  color: isDark ? "rgba(214,213,205,0.4)" : "rgba(74,72,64,0.4)",
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </motion.div>
         </motion.div>
       </motion.div>
 
@@ -189,10 +247,10 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 1 }}
+        transition={{ delay: 2.6, duration: 1 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 cursor-pointer"
         onClick={() => {
-          document.getElementById("blog")?.scrollIntoView({ behavior: "smooth" });
+          document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" });
         }}
       >
         <motion.div
