@@ -1076,9 +1076,12 @@ export function FlexboxDemo() {
         {opts("align", align, setAlign, ["stretch", "center", "flex-start", "flex-end"])}
         {opts("wrap", wrap, setWrap, ["nowrap", "wrap"])}
       </div>
-      <div className="h-[120px] rounded-[10px] border p-2 flex gap-2" style={{ borderColor: p.border, backgroundColor: p.surface, flexDirection: direction as any, justifyContent: justify, alignItems: align, flexWrap: wrap as any }}>
+      <div className="h-[120px] rounded-[10px] border p-2 flex gap-2 overflow-hidden" style={{ borderColor: p.border, backgroundColor: p.surface, flexDirection: direction as any, justifyContent: justify, alignItems: align, flexWrap: wrap as any }}>
         {[1, 2, 3, 4, 5].map(i => (
-          <div key={i} className="rounded-[6px] flex items-center justify-center text-[11px] font-bold shrink-0" style={{ width: direction === "column" ? "100%" : "36px", height: direction === "row" || direction === "row-reverse" ? (align === "stretch" ? "100%" : "36px") : "28px", backgroundColor: p.accentBg, color: p.accent, border: `1px solid ${p.accentBorder}` }}>{i}</div>
+          <div key={i} className="rounded-[6px] flex items-center justify-center text-[11px] font-bold shrink-0" style={{
+            width: direction === "column" ? "52px" : "36px",
+            height: direction === "column" ? "28px" : (align === "stretch" ? "100%" : "36px"),
+            backgroundColor: p.accentBg, color: p.accent, border: `1px solid ${p.accentBorder}` }}>{i}</div>
         ))}
       </div>
     </CodeToggle>
