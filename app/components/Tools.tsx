@@ -25,7 +25,7 @@ export default function Tools() {
     <InteractiveSection id="tools" theme="lab">
       <div ref={ref}>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="mb-16 text-center">
-          <h2 className="text-heading text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-4" style={{ fontFamily: "var(--font-display)" }}>工具箱</h2>
+          <h2 className="text-heading text-[32px] sm:text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-4" style={{ fontFamily: "var(--font-display)" }}>工具箱</h2>
           <p className="text-body text-[18px] leading-[1.3] tracking-[-0.18px] font-[400] mx-auto max-w-[560px]" style={{ fontFamily: "var(--font-body)" }}>每一个工具都是我自己在用、自己维护的。希望能帮到更多同学。</p>
         </motion.div>
 

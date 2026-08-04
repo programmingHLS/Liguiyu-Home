@@ -267,7 +267,7 @@ function AdminUI({
         </motion.div>
 
         {/* Tabs */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex gap-2 mb-6">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex gap-2 flex-wrap mb-6">
           {[
             { key: "users" as const, label: "用户管理", icon: Users },
             { key: "comments" as const, label: "评论管理", icon: MessageSquare },

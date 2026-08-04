@@ -32,6 +32,7 @@ export default function ThemeToggle({ isDark }: { isDark: boolean }) {
               color: isDark ? "#d6d5cd" : "#7d7b72",
             }}
             title={m.label}
+            aria-label={m.label}
           >
             <m.icon size={15} />
             {active && (

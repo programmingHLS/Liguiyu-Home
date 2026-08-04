@@ -178,11 +178,11 @@ export default function Footer() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-5 py-3 rounded-full shadow-2xl"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-5 py-3 rounded-full shadow-2xl max-w-[calc(100vw-32px)]"
             style={{ backgroundColor: "rgba(30,30,40,0.95)", border: "1px solid rgba(232,149,122,0.35)", backdropFilter: "blur(8px)" }}
           >
-            <Check size={15} color="#e8957a" />
-            <span className="text-[13px] font-[500] whitespace-nowrap" style={{ fontFamily: "var(--font-body)", color: "#e6e5dd" }}>
+            <Check size={15} color="#e8957a" className="shrink-0" />
+            <span className="text-[13px] font-[500] whitespace-normal sm:whitespace-nowrap text-center" style={{ fontFamily: "var(--font-body)", color: "#e6e5dd" }}>
               {toast}
             </span>
           </motion.div>

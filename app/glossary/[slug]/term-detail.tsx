@@ -319,10 +319,13 @@ export default function TermDetail({ term, category }: { term: GlossaryTerm; cat
             <h2 className="text-[18px] font-semibold mb-4 tracking-[-0.01em]" style={{ color: colors.text }}>容易混淆？这样区分</h2>
             <div className="space-y-3">
               {term.confusions.map((c, i) => (
-                <div key={i} className="rounded-[12px] border p-4 flex items-start gap-3" style={{ borderColor: colors.border, backgroundColor: colors.surface }}>
-                  <span className="text-[13px] font-semibold shrink-0" style={{ color: accent }}>{term.name} {term.en}</span>
-                  <span className="text-[16px] font-bold shrink-0" style={{ color: colors.textFaint }}>≠</span>
-                  <div>
+                <div key={i} className="rounded-[12px] border p-4 flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3" style={{ borderColor: colors.border, backgroundColor: colors.surface }}>
+                  {/* 移动端：本术语 + ≠ 独立成行，内容从最左开始，不再被挤到右侧 */}
+                  <div className="flex items-baseline gap-2 shrink-0 max-w-full">
+                    <span className="text-[13px] font-semibold min-w-0" style={{ color: accent }}>{term.name} {term.en}</span>
+                    <span className="text-[16px] font-bold" style={{ color: colors.textFaint }}>≠</span>
+                  </div>
+                  <div className="min-w-0">
                     <span className="text-[13px] font-semibold" style={{ color: colors.textMuted }}>{c.term} {c.en}</span>
                     <p className="text-[13px] mt-1 leading-[1.6]" style={{ color: colors.textMuted }}>{c.difference}</p>
                   </div>

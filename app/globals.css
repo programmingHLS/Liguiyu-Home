@@ -585,3 +585,70 @@ html.dark .file-picker-label:hover {
     animation-delay: 0s !important;
   }
 }
+
+/* ═══════════════════════════════════════════
+   Markdown 渲染兜底（.prose）— quiz 页面 marked 输出
+   项目未安装 @tailwindcss/typography，手写基础规则
+   防止窄屏下 p/ul/pre/table 无样式裸奔、溢出
+   ═══════════════════════════════════════════ */
+.prose {
+  line-height: 1.75;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.prose p { margin: 0 0 12px; }
+.prose h1, .prose h2, .prose h3, .prose h4 { font-weight: 600; margin: 20px 0 10px; }
+.prose h1 { font-size: 24px; }
+.prose h2 { font-size: 20px; }
+.prose h3 { font-size: 17px; }
+.prose h4 { font-size: 15px; }
+.prose ul, .prose ol { margin: 0 0 12px; padding-left: 22px; }
+.prose li { margin: 3px 0; }
+.prose strong { font-weight: 700; }
+.prose a { color: #e8957a; text-decoration: none; }
+.prose img { max-width: 100%; border-radius: 10px; margin: 8px 0; }
+.prose hr { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 20px 0; }
+.prose blockquote {
+  border-left: 3px solid rgba(217,119,87,0.35);
+  background: rgba(217,119,87,0.06);
+  border-radius: 0 8px 8px 0;
+  padding: 4px 12px; margin: 0 0 12px;
+}
+.prose blockquote p { margin: 0; }
+.prose code {
+  background: rgba(217,119,87,0.14);
+  color: #e8957a;
+  padding: 1px 6px; border-radius: 4px;
+  font-size: 0.9em; font-family: var(--font-mono);
+}
+.prose pre {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 14px;
+  overflow-x: auto;
+  margin: 0 0 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(217,119,87,0.3) transparent;
+}
+.prose pre code { background: none; padding: 0; color: inherit; }
+.prose table {
+  border-collapse: collapse;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+  margin: 0 0 12px;
+}
+.prose th, .prose td { border: 1px solid rgba(255,255,255,0.1); padding: 6px 10px; text-align: left; }
+.prose th { background: rgba(217,119,87,0.12); color: #e8957a; font-weight: 600; }
+
+/* ═══════════════════════════════════════════
+   移动端全局微调（<768px）
+   ═══════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .blog-content { font-size: 15.5px; }
+  .blog-content h2 { font-size: 21px; }
+  .blog-content h3 { font-size: 18px; }
+  .blog-content pre { padding: 14px; }
+  .blog-content th, .blog-content td { padding: 6px 8px; font-size: 13px; }
+}

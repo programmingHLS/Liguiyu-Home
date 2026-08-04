@@ -190,6 +190,14 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {/* 移动端：登录/用户区 + 主题切换（桌面端在右上角，移动端必须在这里才能访问） */}
+            <div
+              className="mt-3 pt-3 flex items-center justify-between gap-2"
+              style={{ borderTop: isDarkBg ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)" }}
+            >
+              <AuthButton useLightText={isDarkBg} />
+              <ThemeToggle isDark={isDarkBg} />
+            </div>
             <a
               href="https://github.com/programmingWTF"
               target="_blank"

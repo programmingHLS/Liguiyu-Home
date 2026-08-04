@@ -33,7 +33,7 @@ export default function About() {
       <div className="flex flex-col lg:flex-row gap-16 items-center">
         {/* Left: Text */}
         <div className="flex-1">
-          <h2 className="text-heading text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-6" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="text-heading text-[32px] sm:text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-6" style={{ fontFamily: "var(--font-display)" }}>
             关于我
           </h2>
           <p className="text-body text-[18px] leading-[1.45] tracking-[-0.18px] font-[400] mb-5" style={{ fontFamily: "var(--font-body)" }}>

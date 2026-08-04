@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use, useCallback } from "react";
+import { useEffect, useState, use, useCallback, useLayoutEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ArrowLeft, CheckCircle, XCircle, ChevronRight, ChevronLeft, Home, ChevronRight as ChevronRightIcon } from "lucide-react";
@@ -29,7 +29,16 @@ export default function QuizPage({ params }: { params: Promise<{ subject: string
   const [results, setResults] = useState<Map<string, AnswerResult>>(new Map());
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState("");
+  // 桌面端默认展开；移动端（<768px）默认收起，避免 220px 侧栏挤占答题区。
+  // 初始恒为 true 保证 SSR 与客户端首帧一致，useLayoutEffect 在 paint 前按视口收起。
   const [navOpen, setNavOpen] = useState(true);
+  useLayoutEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    if (!mq.matches) setNavOpen(false);
+    const onChange = (e: MediaQueryListEvent) => setNavOpen(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     fetch(`/api/problems/quiz?set=${setSlug}`).then(r => r.json()).then(d => { setSetTitle(d.setTitle || setSlug); setProblems(d.problems || []); }).finally(() => setLoading(false));
@@ -69,9 +78,9 @@ export default function QuizPage({ params }: { params: Promise<{ subject: string
     <>
       <PageGlow /><ClickRipple /><Navbar />
       <main className="flex flex-col relative" style={{ height: "calc(100vh - 64px)", overflow: "hidden" }}>
-        <div className="flex flex-col w-full max-w-[1000px] mx-auto px-8 pt-5" style={{ height: "100%" }}>
+        <div className="flex flex-col w-full max-w-[1000px] mx-auto px-4 sm:px-8 pt-5" style={{ height: "100%" }}>
           {/* Header — positioned below navbar */}
-          <div className="flex items-center justify-between mb-3 shrink-0">
+          <div className="flex items-center justify-between gap-2 flex-wrap mb-3 shrink-0">
             <div className="flex items-center gap-3">
               <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-[14px] font-[500] no-underline"
                 style={btnCss} onMouseEnter={btnHoverIn} onMouseLeave={btnHoverOut}><Home size={15} /> 返回首页</Link>
@@ -104,12 +113,12 @@ export default function QuizPage({ params }: { params: Promise<{ subject: string
                     <span className="text-[13px]" style={{ fontFamily: "var(--font-body)", color: "rgba(255,255,255,0.3)" }}>第 {currentIndex + 1} 题</span>
                   </div>
 
-                  <div className="rounded-[18px] p-8 mb-5" style={{ backgroundColor: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.05)", minHeight: "80px" }}>
+                  <div className="rounded-[18px] p-5 sm:p-8 mb-5" style={{ backgroundColor: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.05)", minHeight: "80px" }}>
                     <div className="prose prose-invert max-w-none text-[18px] leading-[1.85]" style={{ fontFamily: "var(--font-body)" }}
                       dangerouslySetInnerHTML={{ __html: renderMarkdown(currentProblem?.question || "") }} />
                   </div>
 
-                  <div className="rounded-[18px] mb-5 p-6" style={{ backgroundColor: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", minHeight: "60px" }}>
+                  <div className="rounded-[18px] mb-5 p-4 sm:p-6" style={{ backgroundColor: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", minHeight: "60px" }}>
                     {!currentResult ? (
                       isJudge ? (
                         <div className="grid grid-cols-2 gap-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef, useCallback } from "react";
+import { useMemo, useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
 
@@ -26,7 +26,17 @@ function extractToc(html: string): TocItem[] {
 
 export default function ArticleToc({ html }: { html: string }) {
   const items = useMemo(() => extractToc(html), [html]);
+  // 桌面端默认展开；移动端（<768px）默认收起，避免 260px 固定面板盖住正文。
+  // 初始恒为 true 保证 SSR 与客户端首帧一致（无 hydration mismatch），
+  // 再用 useLayoutEffect 在 paint 前按视口收起，移动端无面板闪现。
   const [open, setOpen] = useState(true);
+  useLayoutEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    if (!mq.matches) setOpen(false);
+    const onChange = (e: MediaQueryListEvent) => setOpen(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const [activeId, setActiveId] = useState("");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ top: 0, height: 0 });

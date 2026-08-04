@@ -33,7 +33,7 @@ export default function Skills() {
   return (
     <InteractiveSection id="skills" theme="blueprint">
       <div className="flex flex-col items-center text-center">
-        <h2 className="text-heading text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-4" style={{ fontFamily: "var(--font-display)" }}>
+        <h2 className="text-heading text-[32px] sm:text-[48px] leading-[1.1] tracking-[-0.96px] font-[500] mb-4" style={{ fontFamily: "var(--font-display)" }}>
           技术栈
         </h2>
         <p className="text-body text-[16px] leading-[1.5] font-[400] mb-12" style={{ fontFamily: "var(--font-body)" }}>

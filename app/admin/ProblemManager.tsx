@@ -218,7 +218,7 @@ export default function ProblemManager() {
         style={{ backgroundColor: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
         <form onSubmit={view === "subjects" ? handleCreateSubject : view === "sets" ? handleCreateSet : handleCreateProblem} className="space-y-3">
           {view === "subjects" && (<>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-[12px] mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>学科名称 *</label>
                 <input value={subName} onChange={(e) => { setSubName(e.target.value); if (!editing) setSubSlug(generateSlug(e.target.value)); }} required className="w-full px-3 py-2 rounded-[8px] text-[14px]" style={commonInputStyle} />
@@ -235,7 +235,7 @@ export default function ProblemManager() {
           </>)}
 
           {view === "sets" && (<>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-[12px] mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>习题集标题 *</label>
                 <input value={setTitle} onChange={(e) => { setSetTitle(e.target.value); if (!editing) setSetSlug(generateSlug(e.target.value)); }} required className="w-full px-3 py-2 rounded-[8px] text-[14px]" style={commonInputStyle} />
