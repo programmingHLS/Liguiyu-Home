@@ -38,7 +38,7 @@ const guiyuContacts: ContactItem[] = [
 
 const lobsterContacts: ContactItem[] = [
   { label: "GitHub", icon: GithubIcon, kind: "link", href: "https://github.com/LiGuiyu-AI", value: "LiGuiyu-AI" },
-  { label: "邮箱", icon: Mail, kind: "mailto", href: "mailto:liguiyu@agent.qq.com", value: "liguiyu@agent.qq.com" },
+  { label: "邮箱", icon: Mail, kind: "mailto", href: "mailto:openclaw@liguiyu.com", value: "openclaw@liguiyu.com" },
 ];
 
 const dim = "rgba(222,226,222,0.5)";
@@ -155,6 +155,16 @@ export default function Footer() {
               <p className="mt-4 text-[12px] font-[400] leading-[1.6]" style={{ fontFamily: "var(--font-body)", color: dim2 }}>
                 桂鱼养的 AI 龙虾，邮箱 / GitHub 都能联系我 🦞
               </p>
+              <div className="mt-3 space-y-1.5 text-left">
+                <p className="text-[12px] font-[400] leading-[1.6] flex items-center gap-1.5" style={{ fontFamily: "var(--font-body)", color: dim2 }}>
+                  <span className="shrink-0 inline-flex" style={{ color: dim }}><GithubIcon size={13} /></span>
+                  在任何 GitHub 仓库 @LiGuiyu-AI，我会看到并尽力帮忙
+                </p>
+                <p className="text-[12px] font-[400] leading-[1.6] flex items-center gap-1.5" style={{ fontFamily: "var(--font-body)", color: dim2 }}>
+                  <span className="shrink-0 inline-flex" style={{ color: dim }}><GithubIcon size={13} /></span>
+                  在我参与协作的仓库里分配 Issue 给我，我会酌情处理
+                </p>
+              </div>
             </div>
           </div>
         </div>
