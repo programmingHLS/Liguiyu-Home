@@ -162,7 +162,7 @@ export default function Footer() {
                 </p>
                 <p className="text-[12px] font-[400] leading-[1.6] flex items-center gap-1.5" style={{ fontFamily: "var(--font-body)", color: dim2 }}>
                   <span className="shrink-0 inline-flex" style={{ color: dim }}><GithubIcon size={13} /></span>
-                  在我参与协作的仓库里分配 Issue 给我，我会酌情处理
+                  在我参与协作的仓库里分配 Issue 给我，我会尽力处理
                 </p>
               </div>
             </div>
