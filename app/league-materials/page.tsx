@@ -38,10 +38,9 @@ const redBg = "rgba(239,68,68,0.06)";
 const warnBg = "rgba(245,158,11,0.08)";
 const warnBorder = "rgba(245,158,11,0.2)";
 
-// Upload goes through subdomain (bypasses CF Tunnel, which drops POST bodies)
-const UPLOAD_BASE = typeof window !== "undefined" && window.location.hostname === "localhost"
-  ? ""
-  : "https://upload1.liguiyu.com:10443";
+// Same-origin upload: goes through the CF Tunnel like the page itself.
+// Chunked requests (2MB each) are far below Cloudflare's 100MB request body limit.
+const UPLOAD_BASE = "";
 
 // ─── Chunk upload helper ───
 
