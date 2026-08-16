@@ -38,9 +38,30 @@ const redBg = "rgba(239,68,68,0.06)";
 const warnBg = "rgba(245,158,11,0.08)";
 const warnBorder = "rgba(245,158,11,0.2)";
 
-// Same-origin upload: goes through the CF Tunnel like the page itself.
-// Chunked requests (2MB each) are far below Cloudflare's 100MB request body limit.
-const UPLOAD_BASE = "";
+// ── Dual-channel upload base ──
+// FAST_BASE: IPv6 direct (full uplink speed), used when reachable.
+// Fallback: same-origin (via CF Tunnel) — always works, but slower (~150-200KB/s uplink).
+const FAST_BASE = "https://upload1.liguiyu.com:10443";
+let uploadBase: string = "";
+let baseProbed = false;
+
+async function getUploadBase(): Promise<string> {
+  if (baseProbed) return uploadBase;
+  baseProbed = true;
+  // Probe the fast channel with a short timeout; on any failure keep same-origin.
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 5000);
+    const res = await fetch(`${FAST_BASE}/api/league-materials/ping`, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (res.ok) {
+      uploadBase = FAST_BASE;
+    }
+  } catch {
+    /* fast channel unreachable — fall back to same-origin */
+  }
+  return uploadBase;
+}
 
 // ─── Chunk upload helper ───
 
@@ -56,21 +77,12 @@ async function sendChunk(url: string, blob: Blob): Promise<{
   const timeout = setTimeout(() => controller.abort(), 120000);
 
   try {
-    // Convert blob to base64 (CF Tunnel drops raw binary bodies)
-    const base64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result as string;
-        resolve(dataUrl.substring(dataUrl.indexOf(",") + 1));
-      };
-      reader.onerror = () => reject(new Error("base64 encode failed"));
-      reader.readAsDataURL(blob);
-    });
-
+    // Send the blob directly as raw binary (no base64/JSON overhead).
+    // CF Tunnel passes octet-stream bodies through fine (100MB per-request limit).
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: base64 }),
+      headers: { "Content-Type": "application/octet-stream" },
+      body: blob,
       signal: controller.signal,
     });
     clearTimeout(timeout);
@@ -142,7 +154,7 @@ function UploaderView() {
   const fetchStatus = async () => {
     setStatusLoading(true);
     try {
-      const res = await fetch(`${UPLOAD_BASE}/api/league-materials?yearMonth=${yearMonth}`);
+      const res = await fetch(`${await getUploadBase()}/api/league-materials?yearMonth=${yearMonth}`);
       const data = await res.json();
       setStatuses(data.secretaries || []);
     } finally {
@@ -176,8 +188,8 @@ function UploaderView() {
     setMessage(null);
     setShowOverwriteConfirm(false);
 
-    // Chunked upload: split file into 2MB chunks
-    const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB per chunk
+    // Chunked upload: split file into 8MB chunks
+    const CHUNK_SIZE = 8 * 1024 * 1024; // 8MB per chunk (raw binary, no base64 overhead)
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
     let uploadedBytes = 0;
     const startTime = Date.now();
@@ -187,7 +199,7 @@ function UploaderView() {
       const chunkEnd = Math.min(chunkStart + CHUNK_SIZE, file.size);
       const blob = file.slice(chunkStart, chunkEnd);
 
-      const chunkUrl = `${UPLOAD_BASE}/api/league-materials/chunk?name=${encodeURIComponent(name.trim())}&classId=${encodeURIComponent(classId.trim())}&chunk=${i}&chunks=${totalChunks}`;
+      const chunkUrl = `${await getUploadBase()}/api/league-materials/chunk?name=${encodeURIComponent(name.trim())}&classId=${encodeURIComponent(classId.trim())}&chunk=${i}&chunks=${totalChunks}`;
 
       const result = await sendChunk(chunkUrl, blob);
       if (!result.ok) {
@@ -384,17 +396,20 @@ function AdminView() {
   const [downloadSpeed, setDownloadSpeed] = useState("");
 
   useEffect(() => {
-    fetch(`${UPLOAD_BASE}/api/league-materials?listMonths=true`)
-      .then((r) => r.json())
-      .then((d) => setMonths(d.months || []))
-      .finally(() => setMonthsLoading(false));
+    (async () => {
+      const base = await getUploadBase();
+      const res = await fetch(`${base}/api/league-materials?listMonths=true`);
+      const d = await res.json();
+      setMonths(d.months || []);
+      setMonthsLoading(false);
+    })();
   }, []);
 
   const openMonth = async (ym: string) => {
     setSelectedMonth(ym);
     setStatusLoading(true);
     try {
-      const res = await fetch(`${UPLOAD_BASE}/api/league-materials?yearMonth=${ym}`);
+      const res = await fetch(`${await getUploadBase()}/api/league-materials?yearMonth=${ym}`);
       const data = await res.json();
       setStatuses(data.secretaries || []);
     } finally {

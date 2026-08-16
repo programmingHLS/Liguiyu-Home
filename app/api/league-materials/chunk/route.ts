@@ -62,16 +62,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Read base64-encoded chunk from JSON body
+    // Raw binary body (octet-stream), no base64/JSON overhead
     let chunkData: Buffer;
     try {
-      const body = await req.json();
-      if (!body.data) {
-        return cors(NextResponse.json({ error: "分片数据为空" }, { status: 400 }));
-      }
-      chunkData = Buffer.from(body.data, "base64");
+      chunkData = Buffer.from(await req.arrayBuffer());
       if (chunkData.length === 0) {
-        return cors(NextResponse.json({ error: "分片解码失败" }, { status: 400 }));
+        return cors(NextResponse.json({ error: "分片数据为空" }, { status: 400 }));
       }
     } catch (e: any) {
       console.error("Chunk parse error:", e?.message || e);
