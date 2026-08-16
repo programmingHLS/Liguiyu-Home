@@ -6,6 +6,7 @@ services:
       args:
         ADMIN_MODE: "false"
     container_name: liguiyu-home
+    user: "1000:1001"
     restart: unless-stopped
     ports:
       - "3090:3000"
@@ -25,6 +26,7 @@ services:
       args:
         ADMIN_MODE: "true"
     container_name: liguiyu-admin
+    user: "1000:1001"
     restart: unless-stopped
     ports:
       - "3091:3000"
