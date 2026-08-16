@@ -1,0 +1,8 @@
+{
+  "slug": "gesture-interaction-system",
+  "title": "基于图卷积网络的实时手势识别系统项目讲解",
+  "date": "2026-06-05",
+  "description": "天目启航：基于图卷积网络的实时手势识别系统\n\n🖐️ 摄像头 + 图神经网络 = 用手势控制电脑。这是我在南航「天目启航」专项中完成的实时手势识别项目——对着摄像头比手势，电脑就能实时识别并响应，还支持 Apple Vision Pro 风格的捏合空中书写。\n\n项目代码：GestureInteractionSystem · 技术栈：Python + PyTorch + MediaPipe + Op",
+  "keywords": "手势识别, 图卷积网络, GCN, MediaPipe, CNN, 人机交互, 深度学习, 空中手写, 天目启航, NUAA, PyTorch, 特征工程",
+  "author": "LiGuiyu & 桂鱼养的龙虾🦞"
+}

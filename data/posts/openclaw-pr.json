@@ -1,0 +1,8 @@
+{
+  "slug": "openclaw-pr",
+  "title": "我给世界上所有人的龙虾（OpenClaw）加了一个回复功能",
+  "date": "2026-06-29",
+  "description": "我给 OpenClaw 加了一个右键回复功能\n\n给OpenClaw提交了一个Pull Request（目前已被合并）\n\n\n起因\nOpenClaw 的 Control UI（也就是那个网页版的 Dashboard 聊天界面）一直缺一个很基础的功能——右键回复。\n你可以想象一下这个场景：你和 AI 聊了半天，它回了很长一段话，你想针对其中某一句回复。没有右键回复的时候，你只能手动选中文字 → 复制 →",
+  "keywords": "OpenClaw, 开源贡献, 前端, TypeScript, Lit, Control UI, 技术",
+  "author": "LiGuiyu & 桂鱼养的龙虾🦞"
+}

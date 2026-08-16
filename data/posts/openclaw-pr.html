@@ -1,0 +1,99 @@
+<h2 id="我给-openclaw-加了一个右键回复功能">我给 OpenClaw 加了一个右键回复功能</h2>
+<blockquote>
+<p>给OpenClaw提交了一个Pull Request（目前已被合并）</p>
+</blockquote>
+<hr>
+<h3 id="起因">起因</h3>
+<p>OpenClaw 的 Control UI（也就是那个网页版的 Dashboard 聊天界面）一直缺一个很基础的功能——<strong>右键回复</strong>。</p>
+<p>你可以想象一下这个场景：你和 AI 聊了半天，它回了很长一段话，你想针对其中某一句回复。没有右键回复的时候，你只能手动选中文字 → 复制 → 粘贴到输入框 → 手打 <code>&gt;</code> 前缀 → 再写你的回复。体验十分割裂，也很不人性化</p>
+<p>所以我给它加上了。写了个 PR，合进去了。</p>
+<h3 id="做了什么">做了什么</h3>
+<p><strong>在 Control UI 的聊天界面里，右键任意消息气泡 → 选择「Reply」→ 输入框上方出现回复预览条 → 输入你的回复 → 发送时自动带上 Markdown 引用格式。</strong></p>
+<h4 id="完整流程">完整流程</h4>
+<ol>
+<li>在聊天界面<strong>右键点击</strong>任意一条消息气泡</li>
+<li>弹出右键菜单，第一项是带 💬 图标的 <strong>Reply</strong></li>
+<li>点击 Reply 后，输入框上方出现一条<strong>回复预览栏</strong>——显示发送者名字、被引用内容的前 120 个字符，以及一个 ✕ 关闭按钮</li>
+<li>正常输入你的回复，点击发送</li>
+<li>发给模型的消息会自动变成这样：</li>
+</ol>
+<pre><code>&gt; **User:** hello world
+
+got it
+</code></pre>
+<ol start="6">
+<li>想取消的话，点 ✕ 或者按 <code>Esc</code> 就行，消息恢复正常发送</li>
+</ol>
+<h3 id="技术实现">技术实现</h3>
+<p>整个改动很小（虽然被评为<code>size:L</code>）——<strong>6 个文件，没有引入新依赖，没有改配置，没有动网络层。</strong></p>
+<p>核心思路是在现有的 <code>ChatProps</code> 上增加三个可选属性：</p>
+<table>
+<thead>
+<tr>
+<th>Prop</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>replyTarget</code></td>
+<td>当前正在回复的消息对象</td>
+</tr>
+<tr>
+<td><code>onSetReply</code></td>
+<td>右键菜单点击 Reply 时的回调</td>
+</tr>
+<tr>
+<td><code>onClearReply</code></td>
+<td>关闭预览栏时的回调</td>
+</tr>
+</tbody></table>
+<p>然后在 <code>OpenClawApp</code> 类上加了一个 <code>@state() chatReplyTarget</code> 来持有这个临时状态。发送消息时，<code>handleSendChat</code> 读取这个状态，调用 <code>prependReplyQuote</code> 把引用文本拼到消息前面，然后清掉状态。</p>
+<p>引用的格式化逻辑也写得比较仔细：</p>
+<ul>
+<li>单行消息：<code>&gt; **Sender:** message content</code></li>
+<li>多行消息：每行前面加 <code>&gt; </code>，保持原有换行结构</li>
+<li>消息内容通过 <code>bubble.textContent</code> 提取，<code>.trim().slice(0, 500)</code> 防止超长消息撑爆预览</li>
+<li>引用目标是<strong>纯前端状态</strong>——不持久化，发送或取消后自动清除</li>
+</ul>
+<p>样式方面，回复预览栏用 flexbox 实现，固定在输入框上方，带一个右边距放 ✕ 按钮。右键菜单也加了新条目，图标用的是 Heroicons 里的 <code>ChatBubbleLeftRightIcon</code>。</p>
+<h3 id="改了哪些文件">改了哪些文件</h3>
+<pre><code>ui/src/ui/app-chat.ts          — prependReplyQuote 函数 + 消息队列顺序修复
+ui/src/ui/app-render.ts        — 把 replyTarget/onSetReply/onClearReply 接入 renderChat
+ui/src/ui/app-view-state.ts    — AppViewState 类型新增 chatReplyTarget
+ui/src/ui/app.ts               — OpenClawApp 新增 @state() chatReplyTarget
+ui/src/ui/views/chat.ts        — 右键菜单处理器 + 回复预览栏 + ChatProps 扩展
+ui/src/styles/chat/layout.css  — 预览栏和右键菜单样式
+</code></pre>
+<p>改动量不大，但每个文件都有它明确的分工。</p>
+<h3 id="实测效果">实测效果</h3>
+<p>在 WSL2 Ubuntu + Windows 11 + Chromium 的开发环境下完整跑通了整个流程：</p>
+<ul>
+<li>✅ 右键菜单正常弹出，Reply 选项带对图标</li>
+<li>✅ 预览栏显示发送者名字和被引用文本</li>
+<li>✅ 发送后消息带上正确的 Markdown 引用格式</li>
+<li>✅ ✕ 按钮和 Esc 键都能正常取消回复</li>
+<li>✅ 不点 Reply 直接发送，消息不受任何影响</li>
+</ul>
+<h4 id="截图证据">截图证据</h4>
+<p><strong>右键菜单：</strong></p>
+<p><img src="https://github.com/user-attachments/assets/f40f7887-1dda-4910-9d31-3aa868a6a99e" alt="右键菜单中的 Reply 选项"></p>
+<p><strong>回复预览栏：</strong></p>
+<p><img src="https://github.com/user-attachments/assets/ec500ad9-31ef-4fe8-94df-bdff2d432235" alt="输入框上方的回复预览栏"></p>
+<p><strong>发送后的 Markdown 引用：</strong></p>
+<p><img src="https://github.com/user-attachments/assets/c1abe121-62e8-432b-83e6-041fa5a1693e" alt="消息带 Markdown 引用格式"></p>
+<h3 id="还没测的部分">还没测的部分</h3>
+<p>诚实地说，有几个边界情况没来得及测：</p>
+<ul>
+<li>超长消息在预览栏里的截断效果（代码里写了 120 字符截断，但没拿真实长文本测过）</li>
+<li>开启回复目标后使用斜杠命令的交互</li>
+<li>聊天队列繁忙时的排队行为</li>
+</ul>
+<p>这些都是后续可以补的。</p>
+<h3 id="为什么值得写">为什么值得写</h3>
+<p>这个 PR 技术上很简单，但它是我给 OpenClaw 这个项目的<strong>第一次代码贡献</strong>——而且<strong>被合并了</strong>。</p>
+<p>OpenClaw 是我每天都在用的AI Agent，可以说已经融入了生活的方方面面。能在它的 UI 上加一个我自己设计、自己实现的功能，代码合入主分支，然后看到它跑在所有 Control UI 用户面前，还是很有价值的。</p>
+<p>另外，这个功能虽然小，但它解决的是一个真实的体验痛点。引用回复是聊天应用里的基本操作，缺少它会让高频用户感到别扭。这个PR就完美的解决了这个痛点</p>
+<hr>
+<p><em>PR 链接：<a href="https://github.com/openclaw/openclaw/pull/92654">https://github.com/openclaw/openclaw/pull/92654</a></em></p>
+<p><em>测试环境：OpenClaw dev build (vite) / WSL2 Ubuntu 24.04 / Windows 11 / Chromium</em></p>
+<p><em>2026 年 6 月 29 日</em></p>
