@@ -39,10 +39,10 @@ const warnBg = "rgba(245,158,11,0.08)";
 const warnBorder = "rgba(245,158,11,0.2)";
 
 // ── Dual-channel upload base ──
-// FAST_BASE: 公网直连通道（upload1 灰云 DNS-only → 公网 443 → 路由器 → NAS 10443 → NPM → 本容器）
-//            2026-08-22 架构：443 免端口统一入口，无 CF 100MB 限制、全速直传。
+// FAST_BASE: 公网直连通道（upload1 灰云 DNS-only → 公网 IP:10443 → 路由器 → NAS 10443 → NPM → 本容器）
+//            ⚠️ 2026-08-22 实测：运营商拦截家宽 443 入站（外部全超时），必须用 10443！
 // Fallback: same-origin（liguiyu.com 走 CF 代理），仅 FAST_BASE 探测失败时用（8MB 分片兼容 CF 限制）。
-const FAST_BASE = "https://upload1.liguiyu.com";
+const FAST_BASE = "https://upload1.liguiyu.com:10443";
 let uploadBase: string = "";
 let baseProbed = false;
 
