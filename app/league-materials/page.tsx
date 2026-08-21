@@ -39,8 +39,9 @@ const warnBg = "rgba(245,158,11,0.08)";
 const warnBorder = "rgba(245,158,11,0.2)";
 
 // ── Dual-channel upload base ──
-// FAST_BASE: IPv6 direct (full uplink speed), used when reachable.
-// Fallback: same-origin (via CF Tunnel) — always works, but slower (~150-200KB/s uplink).
+// FAST_BASE: 公网直连通道（upload1 灰云 DNS-only → 家里公网 IP:10443 → NPM → 本容器）
+//            2026-08-22 架构重构后生效：无 CF 100MB 限制、全速直传。
+// Fallback: same-origin（liguiyu.com 走 CF 代理），仅 FAST_BASE 探测失败时用（8MB 分片兼容 CF 限制）。
 const FAST_BASE = "https://upload1.liguiyu.com:10443";
 let uploadBase: string = "";
 let baseProbed = false;
@@ -78,7 +79,7 @@ async function sendChunk(url: string, blob: Blob): Promise<{
 
   try {
     // Send the blob directly as raw binary (no base64/JSON overhead).
-    // CF Tunnel passes octet-stream bodies through fine (100MB per-request limit).
+    // 直连通道无大小限制；CF 兜底分片 8MB/片，不会触发 100MB 限制。
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/octet-stream" },
@@ -308,7 +309,7 @@ function UploaderView() {
                     style={{ fontFamily: "var(--font-body)" }}
                   >
                     <span className={file ? "text-heading" : "text-muted"}>
-                      {file ? file.name : "点击选择 .zip 文件（文件需 ≤200MB）"}
+                      {file ? file.name : "点击选择 .zip 文件（直连通道 ≤2GB）"}
                     </span>
                     <input
                       ref={fileInputRef}
