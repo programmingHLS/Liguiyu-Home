@@ -25,6 +25,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${data.meta.title} · 南航工具箱`,
     description: data.meta.description,
     keywords: data.meta.keywords?.split(",").map((k) => k.trim()),
+    alternates: {
+      canonical: `/blog/${data.meta.slug}`,
+    },
+    openGraph: {
+      title: `${data.meta.title} · 李桂聿`,
+      description: data.meta.description,
+      type: "article",
+      url: `https://liguiyu.com/blog/${data.meta.slug}`,
+      images: [
+        {
+          url: "/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: data.meta.title,
+        },
+      ],
+    },
   };
 }
 
@@ -33,8 +50,36 @@ export default async function BlogPostPage({ params }: Props) {
   const data = getPostBySlug(slug);
   if (!data) notFound();
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: data.meta.title,
+    description: data.meta.description,
+    datePublished: data.meta.date,
+    dateModified: data.meta.date,
+    inLanguage: "zh-CN",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://liguiyu.com/blog/${data.meta.slug}`,
+    },
+    author: {
+      "@type": "Person",
+      name: (data.meta as any).author || "李桂聿",
+    },
+    publisher: {
+      "@type": "Person",
+      name: "李桂聿",
+      url: "https://liguiyu.com",
+    },
+    keywords: data.meta.keywords,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <PageGlow />
       <ClickRipple />
       <ReadingProgress />
