@@ -16,6 +16,7 @@ const navLinks = [
   { href: "/#skills", label: "技术栈" },
   { href: "/#blog", label: "更新" },
   { href: "/#tools", label: "工具箱" },
+  { href: "/services", label: "服务" },
   { href: "/#about", label: "关于" },
   { href: "/#footer-contact", label: "联系" },
 ];
