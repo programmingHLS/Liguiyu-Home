@@ -73,8 +73,8 @@ export const serviceCategories: ServiceCategory[] = [
     title: "Windows 与系统",
     tagline: "从“装个系统”到“开机即用”。",
     items: [
-      { name: "系统重装", desc: "Windows 全新安装、驱动配齐", price: "¥39", offlineOnly: true },
-      { name: "新机 / 重装全家桶", desc: "系统 → 驱动 → 常用软件 → 开发环境 → AI 工具 → 备份，一次配好", price: "¥79 起" },
+      { name: "系统重装", desc: "Windows 全新安装、驱动配齐", price: "¥49", offlineOnly: true },
+      { name: "新机 / 重装全家桶", desc: "系统 → 驱动 → 常用软件 → 开发环境 → AI 工具 → 备份，一次配好", price: "¥59 起" },
       { name: "系统迁移与备份", desc: "换机迁移、重要数据备份方案", price: "¥39 起" },
       { name: "驱动与授权排查", desc: "驱动装不上、激活 / 授权报错", price: "¥20 起" },
       { name: "软件安装与故障", desc: "软件装不上、报错、冲突", price: "¥10-20" },
