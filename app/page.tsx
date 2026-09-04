@@ -4,6 +4,7 @@ import Tools from "./components/Tools";
 import About from "./components/About";
 import Skills from "./components/Skills";
 import Blog from "./components/Blog";
+import Services from "./components/Services";
 import Footer from "./components/Footer";
 import GlobalGrid from "./components/GlobalGrid";
 import PageGlow from "./components/PageGlow";
@@ -25,6 +26,7 @@ export default function Home() {
       <Skills />
       <Blog posts={posts} />
       <Tools />
+      <Services />
       <About />
       <Footer />
     </main>
