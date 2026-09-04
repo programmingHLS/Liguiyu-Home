@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 
 const MotionLink = motion.create(Link);
-import { Library, BookOpen, ExternalLink, Wrench, Upload, SpellCheck } from "lucide-react";
+import { Library, BookOpen, ExternalLink, Monitor, Upload, SpellCheck } from "lucide-react";
 import InteractiveSection from "./InteractiveSection";
 
 const tools = [
@@ -14,7 +14,7 @@ const tools = [
   { icon: Upload, title: "致元书院团日活动资料提交", desc: "每月团日活动资料在线提交，自动归档、自动统计。团支书的好帮手。", href: "/league-materials", label: "进入提交", accent: "#d97757", status: "已上线" },
   { icon: BookOpen, title: "智能题库", desc: "分科目刷题，在线作答即时判对错。支持下载习题集 PDF，考试复习不再迷茫。", href: "/problems", label: "开始刷题", accent: "#5a6578", status: "调试中" },
   { icon: Library, title: "NUAA 致元书院图书馆", desc: "更快的检索、更清爽的界面。在宿舍就能查书、续借。", href: "#", label: "敬请期待", accent: "#5a6578", status: "开发中" },
-  { icon: Wrench, title: "技术服务", desc: "电脑卡顿、重装系统、AI Agent 安装、NAS 与网站搭建。明码标价，先报价后动手。", href: "/services", label: "去看看", accent: "#d97757", status: "已上线" },
+  { icon: Monitor, title: "敬请期待...", desc: "更多南航工具箱正在规划中，期待未来的更新。", href: "#", label: "敬请期待", accent: "#5a6578", status: "规划中" },
 ];
 
 export default function Tools() {

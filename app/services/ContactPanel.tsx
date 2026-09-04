@@ -9,22 +9,12 @@ const CONTACTS = [
   { label: "QQ", value: "3477492305", hint: "加好友 · 备注「技术服务」", kind: "copy" as const },
   { label: "微信", value: "liguiyu666666666666", hint: "加好友 · 备注「技术服务」", kind: "copy" as const },
   { label: "邮箱", value: "contact@liguiyu.com", href: "mailto:contact@liguiyu.com?subject=技术服务咨询", hint: "发邮件 · 标题注明来意", kind: "mailto" as const },
-  { label: "GitHub", value: "programmingWTF", href: "https://github.com/programmingWTF", hint: "Issues / 邮件都可", kind: "link" as const },
 ];
 
 function QqIcon({ size = 22 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
       <path d="M21.395 15.035a39.548 39.548 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.526 4.632 17.351 0 12 0S4.474 4.632 4.474 9.241c0 .274.013.804.014.836l-1.08 2.695a38.97 38.97 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.379.646-.301.778.343.578 5.883.369 7.482.369 1.598 0 7.138.209 7.481-.369.078-.132.132-.458-.301-.778-.482-.356-1.233-.646-1.846-.835 1.637-1.384 2.393-3.302 2.393-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673z" />
-    </svg>
-  );
-}
-
-function GithubIcon({ size = 22 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
     </svg>
   );
 }
@@ -68,10 +58,10 @@ export default function ContactPanel() {
           说一句你想解决什么就行（例如“电脑最近特别卡”“想装一个 Agent”），我会先免费判断问题、给个估价，你点头才动手。本人在线回复，通常当天内答复。
         </p>
 
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           {CONTACTS.map((c) => {
             const icon =
-              c.label === "QQ" ? <QqIcon size={22} /> : c.label === "微信" ? <MessageCircle size={22} /> : c.label === "邮箱" ? <Mail size={22} /> : <GithubIcon size={22} />;
+              c.label === "QQ" ? <QqIcon size={22} /> : c.label === "微信" ? <MessageCircle size={22} /> : <Mail size={22} />;
 
             const inner = (
               <>
@@ -106,7 +96,7 @@ export default function ContactPanel() {
               );
             }
             return (
-              <a key={c.label} href={c.href} target={c.kind === "link" ? "_blank" : undefined} rel={c.kind === "link" ? "noopener noreferrer" : undefined} className={baseClass} style={baseStyle}>
+              <a key={c.label} href={c.href} className={baseClass} style={baseStyle}>
                 {inner}
               </a>
             );
